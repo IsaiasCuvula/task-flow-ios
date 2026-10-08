@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+
+//TODO - SET App theme
+
 struct HomeView: View {
     var body: some View {
         VStack {
