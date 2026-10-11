@@ -6,20 +6,46 @@
 //
 
 import SwiftUI
+import SwiftData
 
 
 struct HomeView: View {
+    @Query private var allTasks: [Task] = []
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("add_task")
+        NavigationStack{
+            VStack {
+                ForEach(allTasks){ task in
+                        
+                    HStack{
+                        
+                        Button{
+                            withAnimation {
+                                task.isCompleted.toggle()
+                            }
+                        } label: {
+                            Image(systemName:task.isCompleted ? "checkmark.square.fill" :  "square")
+                        }
+                       
+                       
+                        Text(task.title)
+                            .font(.title3.weight(.light))
+                            .padding(.vertical, 2)
+                            .foregroundStyle(task.isCompleted ? Color.primary : Color.accentColor )
+                        
+                        Spacer()
+                        
+                        
+                    }
+                    
+                }
+            }
+            .navigationTitle("home")
+            .padding()
         }
-        .padding()
     }
 }
 
-#Preview {
-    HomeView()
-}
+//#Preview {
+//    HomeView()
+//}
