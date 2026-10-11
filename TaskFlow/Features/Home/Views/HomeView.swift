@@ -14,30 +14,32 @@ struct HomeView: View {
     
     var body: some View {
         NavigationStack{
-            VStack {
-                ForEach(allTasks){ task in
-                        
-                    HStack{
-                        
-                        Button{
-                            withAnimation {
-                                task.isCompleted.toggle()
+                ScrollView{
+                    VStack {
+                        ForEach(allTasks){ task in
+                                
+                            HStack{
+                                
+                                Button{
+                                    withAnimation {
+                                        task.isCompleted.toggle()
+                                    }
+                                } label: {
+                                    Image(systemName:task.isCompleted ? "checkmark.square.fill" :  "square")
+                                }
+                               
+                               
+                                Text(task.title)
+                                    .font(.title3.weight(.light))
+                                    .padding(.vertical, 2)
+                                    .foregroundStyle(task.isCompleted ? Color.primary : Color.accentColor )
+                                
+                                Spacer()
+                                
+                                
                             }
-                        } label: {
-                            Image(systemName:task.isCompleted ? "checkmark.square.fill" :  "square")
+                            
                         }
-                       
-                       
-                        Text(task.title)
-                            .font(.title3.weight(.light))
-                            .padding(.vertical, 2)
-                            .foregroundStyle(task.isCompleted ? Color.primary : Color.accentColor )
-                        
-                        Spacer()
-                        
-                        
-                    }
-                    
                 }
             }
             .navigationTitle("home")

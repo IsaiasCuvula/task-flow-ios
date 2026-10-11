@@ -13,6 +13,7 @@ struct TaskFlowApp: App {
     var body: some Scene {
         WindowGroup {
             MainTabView()
+                .fontDesign(.rounded)
         }
         .modelContainer(for: Task.self)
     }

@@ -62,7 +62,14 @@ struct AddTaskView: View {
                         }
                     }
                 } label: {
-                    Label(vm.priority.rawValue.capitalized, systemImage: "flag")
+                    
+                    if let priority = vm.priority {
+                        Label(priority.rawValue.capitalized, systemImage: "flag")
+                    } else {
+                        Image(systemName: "flag")
+                    }
+                   
+                   
                 }
                 .frame(width: 120, alignment: .leading)
                 

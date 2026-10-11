@@ -14,7 +14,7 @@ final class AddTaskViewModel {
     var title = ""
     var note = ""
     var dueDate: Date? = nil
-    var priority: TaskPriority = .medium
+    var priority: TaskPriority?  = nil
     
     
     var isValid: Bool {
@@ -28,7 +28,11 @@ final class AddTaskViewModel {
             throw TaskError.emptyTitle
         }
         
-        let newTask = Task(title: title, priority: priority)
+        let newTask = Task(title: title)
+        
+        if let p = priority{
+            newTask.priority = p
+        }
         
         if(!note.trimmingCharacters(in: .whitespaces).isEmpty){
             newTask.note = note
