@@ -18,9 +18,9 @@ struct TaskLinksView: View {
         }else{
             VStack(spacing: 12) {
                 ForEach(task.links){ link in
-                        Button{
-                            //MARK: - Open link
-                        } label: {
+                    
+                    if let url = URL(string: link.link){
+                        Link(destination: url){
                             HStack(spacing: 8){
                                 Image(systemName: "link")
                                     .font(.title3)
@@ -34,13 +34,9 @@ struct TaskLinksView: View {
                                 
                                 Image(systemName: "arrow.up.right")
                                     .foregroundStyle(.secondary)
-                            }
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                            }.frame(maxWidth: .infinity, alignment: .leading)
                         }
-                        .buttonStyle(.plain)
-                       
-                        
-                   
+                    }
                 }
             }
         }
