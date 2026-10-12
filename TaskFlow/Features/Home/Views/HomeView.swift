@@ -16,6 +16,10 @@ struct HomeView: View {
         NavigationStack{
                 ScrollView{
                     VStack {
+                        if allTasks.isEmpty {
+                            ContentUnavailableView("empty_tasks", systemImage: "list.bullet.indent")
+                        }
+                        
                         ForEach(allTasks){ task in
                                 
                             HStack{

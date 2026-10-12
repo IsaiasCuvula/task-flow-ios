@@ -10,5 +10,4 @@ import Foundation
 enum TaskPriority: String, Codable, CaseIterable {
     case low
     case medium
-    case high
 }

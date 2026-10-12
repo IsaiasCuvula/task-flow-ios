@@ -25,7 +25,7 @@ final class AddTaskViewModel {
     func save(to context: ModelContext) throws {
         
         guard isValid else {
-            throw TaskError.emptyTitle
+            throw TaskFlowError.emptyTitle
         }
         
         let newTask = Task(title: title)

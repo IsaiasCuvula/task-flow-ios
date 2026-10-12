@@ -19,6 +19,12 @@ final class Task{
     var priority: TaskPriority
     var createdAt: Date
     
+    @Relationship(deleteRule: .cascade, inverse: \Subtask.task)
+    var subtasks: [Subtask] = []
+    
+    @Relationship(deleteRule: .cascade, inverse: \TaskLink.task)
+    var links: [TaskLink] = []
+    
     
     init(title: String,note: String? = nil, isCompleted: Bool = false, dueDate: Date? = nil, priority: TaskPriority = .medium) {
         self.title = title

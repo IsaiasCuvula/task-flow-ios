@@ -15,6 +15,6 @@ struct TaskFlowApp: App {
             MainTabView()
                 .fontDesign(.rounded)
         }
-        .modelContainer(for: Task.self)
+        .modelContainer(for: [Task.self, Subtask.self, TaskLink.self])
     }
 }

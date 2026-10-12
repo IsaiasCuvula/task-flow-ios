@@ -10,25 +10,31 @@ import SwiftData
 
 struct TasksView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \Task.dueDate) private var alltAsks: [Task] = []
-    @State private var showEditTask = false
+    @Query(sort: \Task.dueDate) private var allTasks: [Task] = []
+    @State private var selectedTask: Task?
     
     var body: some View {
         NavigationStack{
+            
+            if allTasks.isEmpty {
+                ContentUnavailableView("empty_tasks", systemImage: "list.bullet.indent")
+            }
+            
             List {
-                ForEach(alltAsks){ task in
+                ForEach(allTasks){ task in
                     
                         HStack(spacing: 8){
                             Button{
                                 task.isCompleted.toggle()
                             } label: {
                                 Image(systemName:task.isCompleted ? "checkmark.app.fill" : "app")
+                                    .font(.title)
                                     .foregroundStyle(task.isCompleted  ?  AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
                             }
                             .buttonStyle(.plain)
                            
                             Button{
-                                showEditTask.toggle()
+                                selectedTask = task
                             } label: {
                                 VStack(alignment: .leading,spacing: 4){
                                     Text(task.title)
@@ -36,18 +42,24 @@ struct TasksView: View {
                                         .lineLimit(1)
                                     
                                     HStack(spacing: 4){
-                                        if let note = task.note{
-                                            Text(note)
-                                                .font(.footnote)
-                                                .lineLimit(1)
-                                        }
                                         if let date = task.dueDate{
                                             Text(
                                                 date.formatted(date:.abbreviated, time:.omitted))
-                                            .foregroundStyle(.secondary)
-                                            .font(.footnote.weight(.regular))
+                                            
+                                        }
+                                        
+                                        if task.dueDate != nil && task.note != nil {
+                                            
+                                            Text("·")
+                                        }
+                                        
+                                        if let note = task.note{
+                                            Text(note)
                                         }
                                     }
+                                    .foregroundStyle(.secondary)
+                                    .font(.footnote.weight(.regular))
+                                    .lineLimit(1)
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             }
@@ -68,8 +80,8 @@ struct TasksView: View {
             }
             .listStyle(.plain)
             .navigationTitle("tasks")
-            .sheet(isPresented: $showEditTask) {
-                    //
+            .sheet(item: $selectedTask) { task in
+                TaskDetailsView(task: task)
             }
         }
     }
