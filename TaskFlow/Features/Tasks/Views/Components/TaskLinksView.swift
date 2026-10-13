@@ -15,6 +15,7 @@ struct TaskLinksView: View {
      
         if task.links.isEmpty {
             ContentUnavailableView("empty_links", systemImage: "link")
+                .scaleEffect(0.8)
         }else{
             VStack(spacing: 12) {
                 ForEach(task.links){ link in

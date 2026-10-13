@@ -74,14 +74,14 @@ struct HomeContent: View {
             
         case 1:
             let a = noUrgentTasks[0]
-            HomeTaskCardView(task: a, color: .blue, height: 120) {
+            HomeTaskCardView(task: a, color: Color.accent, height: 120) {
                 selectedTask = a
             }
         case 2:
             let a = noUrgentTasks[0]
             let b = noUrgentTasks[1]
             HStack(spacing: 12) {
-                HomeTaskCardView(task: a, color: .blue) { selectedTask = a }
+                HomeTaskCardView(task: a, color: Color.accent) { selectedTask = a }
                 HomeTaskCardView(task: b, color: .green) { selectedTask = b }
             }
             

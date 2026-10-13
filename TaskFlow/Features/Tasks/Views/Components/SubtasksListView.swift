@@ -17,6 +17,7 @@ struct SubtasksListView: View {
             
             if task.subtasks.isEmpty {
                 ContentUnavailableView("empty_tasks", systemImage: "list.bullet.indent")
+                    .scaleEffect(0.8)
             }else{
                 VStack(spacing: 12) {
                     ForEach(task.subtasks){ subtask in

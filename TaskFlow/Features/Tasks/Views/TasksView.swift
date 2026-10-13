@@ -17,7 +17,8 @@ struct TasksView: View {
         NavigationStack{
             ScrollView{
                 if allTasks.isEmpty {
-                    ContentUnavailableView("empty_tasks", systemImage: "app")
+                    ContentUnavailableView("empty_tasks", systemImage: "checklist.checked")
+                        .scaleEffect(0.8)
                 }
                 
                 VStack {
