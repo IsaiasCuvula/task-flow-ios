@@ -10,48 +10,128 @@ import SwiftData
 
 
 struct HomeView: View {
-    @Query private var allTasks: [Task] = []
+    @Query(sort: \Task.dueDate) private var allTasks: [Task] = []
+    @State private var searchText = ""
+    @State private var viewModel = HomeViewModel()
+    @State private var selectedTask: Task? = nil
+    
+    private var noUrgentTasks: [Task] {
+        let noUrgentTasks = viewModel.nonUrgentTasks(tasks: allTasks)
+        guard !searchText.isEmpty else { return noUrgentTasks}
+        return noUrgentTasks.filter { task in
+            task.title.localizedStandardContains(searchText) ||
+            ((task.note?.localizedStandardContains(searchText)) != nil)
+        }
+    }
     
     var body: some View {
         NavigationStack{
                 ScrollView{
                     VStack {
-                        if allTasks.isEmpty {
+                        if noUrgentTasks.isEmpty {
                             ContentUnavailableView("empty_tasks", systemImage: "list.bullet.indent")
                         }
                         
-                        ForEach(allTasks){ task in
-                                
-                            HStack{
-                                
-                                Button{
-                                    withAnimation {
-                                        task.isCompleted.toggle()
-                                    }
-                                } label: {
-                                    Image(systemName:task.isCompleted ? "checkmark.square.fill" :  "square")
+                        
+                        if noUrgentTasks.count == 1 {
+                            HomeTaskCardView(
+                                task: allTasks.first!,
+                                color: Color.blue,
+                                height: 120,
+                                onTap: {
+                                    selectedTask =  allTasks.first!
                                 }
-                               
-                               
-                                Text(task.title)
-                                    .font(.title3.weight(.light))
-                                    .padding(.vertical, 2)
-                                    .foregroundStyle(task.isCompleted ? Color.primary : Color.accentColor )
+                            )
+                        }
+                        
+                        if noUrgentTasks.count == 2 {
+                            HStack(spacing: 12){
+                                HomeTaskCardView(
+                                    task: allTasks.first!,
+                                    color: Color.blue,
+                                    onTap: {
+                                        selectedTask =  allTasks.first!
+                                    }
+                                )
+                                HomeTaskCardView(
+                                    task: allTasks.first!,
+                                    color: Color.green,
+                                    onTap: {
+                                        selectedTask =  allTasks.first!
+                                    }
+                                )
+                            }.frame(maxWidth: .infinity)
+                        }
+                        
+                        
+                        
+                        if noUrgentTasks.count == 3 {
+                            HStack(spacing: 12){
+                                HomeTaskCardView(
+                                    task: allTasks.first!,
+                                    color: Color.accent,
+                                    height: 212,
+                                    onTap: {
+                                        selectedTask =  allTasks.first!
+                                    }
+                                )
                                 
-                                Spacer()
-                                
-                                
-                            }
+                                VStack(spacing: 12){
+                                    HomeTaskCardView(
+                                        task: allTasks.first!,
+                                        color: Color.blue,
+                                    )
+                                    HomeTaskCardView(
+                                        task: allTasks.first!,
+                                        color: Color.green,
+                                        onTap: {
+                                            selectedTask =  allTasks.first!
+                                        }
+                                    )
+                                }
+                            }.frame(height: 212)
+                        }
+                        
+                        
+                        
+                        HStack{
+                            Text("urgent tasks")
+                                .font(.title3.weight(.bold))
+                                .padding(.bottom, 2)
                             
+                            Spacer()
+                        }
+                        .padding(.top)
+                        
+                        
+                        ForEach(noUrgentTasks){ task in
+                            TaskTileView(task: task, onTap: {
+                                selectedTask = task
+                            })
+                           
                         }
                 }
             }
             .navigationTitle("home")
+            .searchable(text: $searchText, prompt: "search_task")
             .padding()
+            .sheet(item: $selectedTask) { task in
+                TaskDetailsView(task: task)
+            }
         }
     }
 }
 
-//#Preview {
-//    HomeView()
-//}
+#Preview {
+    let container = try! ModelContainer(
+        for: Task.self,
+        configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+
+    container.mainContext.insert(Task(title: "Comprar leite", dueDate: .now))
+    container.mainContext.insert(Task(title: "Estudar SwiftUI", dueDate: .now))
+    container.mainContext.insert(Task(title: "Melhorar SwiftUI", dueDate: .now))
+
+    return HomeView()
+        .modelContainer(container)
+}

@@ -29,6 +29,7 @@ struct MainTabView: View {
                 Color.clear
             }
         }
+        .fontDesign(.rounded)
         .onChange(of: tabSelection) { old, new in
             if new == 3 {
                 tabSelection = old

@@ -15,78 +15,38 @@ struct TasksView: View {
     
     var body: some View {
         NavigationStack{
-            
-            if allTasks.isEmpty {
-                ContentUnavailableView("empty_tasks", systemImage: "list.bullet.indent")
-            }
-            
-            List {
-                ForEach(allTasks){ task in
-                    
-                        HStack(spacing: 8){
-                            Button{
-                                task.isCompleted.toggle()
-                            } label: {
-                                Image(systemName:task.isCompleted ? "checkmark.app.fill" : "app")
-                                    .font(.title)
-                                    .foregroundStyle(task.isCompleted  ?  AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
-                            }
-                            .buttonStyle(.plain)
-                           
-                            Button{
-                                selectedTask = task
-                            } label: {
-                                VStack(alignment: .leading,spacing: 4){
-                                    Text(task.title)
-                                        .font(.title3)
-                                        .lineLimit(1)
-                                    
-                                    HStack(spacing: 4){
-                                        if let date = task.dueDate{
-                                            Text(
-                                                date.formatted(date:.abbreviated, time:.omitted))
-                                            
-                                        }
-                                        
-                                        if task.dueDate != nil && task.note != nil {
-                                            
-                                            Text("·")
-                                        }
-                                        
-                                        if let note = task.note{
-                                            Text(note)
-                                        }
-                                    }
-                                    .foregroundStyle(.secondary)
-                                    .font(.footnote.weight(.regular))
-                                    .lineLimit(1)
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                            .buttonStyle(.plain)
-                       Spacer()
-                    }
-                        .swipeActions {
-                            Button(role: .destructive){
-                                withAnimation {
-                                    modelContext.delete(task)
-                                }
-                            } label: {
-                                Label("delete", systemImage: "trash")
-                            }
-                        }
+            ScrollView{
+                if allTasks.isEmpty {
+                    ContentUnavailableView("empty_tasks", systemImage: "list.bullet.indent")
                 }
-                .listRowSeparator(.hidden)
+                
+                VStack {
+                    ForEach(allTasks){ task in
+                       TaskTileView(task: task, onTap:{selectedTask = task})
+                    }
+                }
+                .padding()
+            }.navigationTitle("tasks")
+                .sheet(item: $selectedTask) { task in
+                    TaskDetailsView(task: task)
+                }
             }
-            .listStyle(.plain)
-            .navigationTitle("tasks")
-            .sheet(item: $selectedTask) { task in
-                TaskDetailsView(task: task)
-            }
-        }
-    }
+   }
+            
 }
 
 #Preview {
-    TasksView()
+    
+    let container = try! ModelContainer(
+        for: Task.self,
+        configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+
+    container.mainContext.insert(Task(title: "Comprar leite", dueDate: .now))
+    container.mainContext.insert(Task(title: "Estudar SwiftUI", dueDate: .now))
+    container.mainContext.insert(Task(title: "Melhorar SwiftUI", dueDate: .now))
+
+    return TasksView()
+        .modelContainer(container)
+   
 }

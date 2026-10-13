@@ -34,4 +34,17 @@ final class Task{
         self.priority = priority
         self.createdAt = .now
     }
+    
+     var progress: Double {
+        guard !subtasks.isEmpty else { return 0 }
+        return Double(subtasks.filter(\.isCompleted).count) / Double(subtasks.count)
+    }
+    
+    var daysLeft: Int? {
+        guard let dueDate else { return nil }
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: .now)
+        let due = calendar.startOfDay(for: dueDate)
+        return calendar.dateComponents([.day], from: today, to: due).day
+    }
 }
