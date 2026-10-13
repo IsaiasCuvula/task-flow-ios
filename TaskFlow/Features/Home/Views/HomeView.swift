@@ -16,86 +16,24 @@ struct HomeView: View {
     @State private var selectedTask: Task? = nil
     
     private var noUrgentTasks: [Task] {
-        let noUrgentTasks = viewModel.nonUrgentTasks(tasks: allTasks)
-        guard !searchText.isEmpty else { return noUrgentTasks}
-        return noUrgentTasks.filter { task in
-            task.title.localizedStandardContains(searchText) ||
-            ((task.note?.localizedStandardContains(searchText)) != nil)
-        }
+        let lowTasks = viewModel.tasksByPriority(tasks: allTasks, priority: .low)
+        let mediumTasks = viewModel.tasksByPriority(tasks: allTasks, priority: .medium)
+
+        return lowTasks + mediumTasks
+    }
+    
+    private var urgentTasks: [Task] {
+        return viewModel.tasksByPriority(tasks: allTasks, priority: TaskPriority.high)
     }
     
     var body: some View {
         NavigationStack{
                 ScrollView{
-                    VStack {
-                        if noUrgentTasks.isEmpty {
-                            ContentUnavailableView("empty_tasks", systemImage: "list.bullet.indent")
-                        }
-                        
-                        
-                        if noUrgentTasks.count == 1 {
-                            HomeTaskCardView(
-                                task: allTasks.first!,
-                                color: Color.blue,
-                                height: 120,
-                                onTap: {
-                                    selectedTask =  allTasks.first!
-                                }
-                            )
-                        }
-                        
-                        if noUrgentTasks.count == 2 {
-                            HStack(spacing: 12){
-                                HomeTaskCardView(
-                                    task: allTasks.first!,
-                                    color: Color.blue,
-                                    onTap: {
-                                        selectedTask =  allTasks.first!
-                                    }
-                                )
-                                HomeTaskCardView(
-                                    task: allTasks.first!,
-                                    color: Color.green,
-                                    onTap: {
-                                        selectedTask =  allTasks.first!
-                                    }
-                                )
-                            }.frame(maxWidth: .infinity)
-                        }
-                        
-                        
-                        
-                        if noUrgentTasks.count == 3 {
-                            HStack(spacing: 12){
-                                HomeTaskCardView(
-                                    task: allTasks.first!,
-                                    color: Color.accent,
-                                    height: 212,
-                                    onTap: {
-                                        selectedTask =  allTasks.first!
-                                    }
-                                )
-                                
-                                VStack(spacing: 12){
-                                    HomeTaskCardView(
-                                        task: allTasks.first!,
-                                        color: Color.blue,
-                                    )
-                                    HomeTaskCardView(
-                                        task: allTasks.first!,
-                                        color: Color.green,
-                                        onTap: {
-                                            selectedTask =  allTasks.first!
-                                        }
-                                    )
-                                }
-                            }.frame(height: 212)
-                        }
-                        
-                        
+                    LazyVStack {
+                        highlightCards
                         
                         HStack{
-                            Text("urgent tasks")
+                            Text("urgent_tasks")
                                 .font(.title3.weight(.bold))
                                 .padding(.bottom, 2)
                             
@@ -104,20 +42,66 @@ struct HomeView: View {
                         .padding(.top)
                         
                         
-                        ForEach(noUrgentTasks){ task in
+                        if urgentTasks.isEmpty {
+                            Text("empty_tasks")
+                                .font(.title3.weight(.medium))
+                                .padding(.bottom, 2)
+                        }
+                        
+                        
+                        ForEach(urgentTasks){ task in
                             TaskTileView(task: task, onTap: {
                                 selectedTask = task
                             })
-                           
                         }
-                }
+                }.padding(.horizontal)
             }
             .navigationTitle("home")
             .searchable(text: $searchText, prompt: "search_task")
-            .padding()
             .sheet(item: $selectedTask) { task in
                 TaskDetailsView(task: task)
             }
+        }
+    }
+    
+    @ViewBuilder
+    private var highlightCards: some View {
+        
+        switch noUrgentTasks.count {
+        case 0:
+            ContentUnavailableView("empty_tasks", systemImage: "list.bullet.indent")
+            
+        case 1:
+            let a = noUrgentTasks[0]
+            HomeTaskCardView(task: a, color: .blue, height: 120) {
+                selectedTask = a
+            }
+        case 2:
+            let a = noUrgentTasks[0]
+            let b = noUrgentTasks[1]
+            HStack(spacing: 12) {
+                HomeTaskCardView(task: a, color: .blue) { selectedTask = a }
+                HomeTaskCardView(task: b, color: .green) { selectedTask = b }
+            }
+            
+        default:
+            let a = noUrgentTasks[0]
+            let b = noUrgentTasks[1]
+            let c = noUrgentTasks[2]
+            HStack(spacing: 12) {
+                HomeTaskCardView(task: a, color: Color.accent, height: 212){
+                    selectedTask = a
+                }
+                VStack(spacing: 12) {
+                    HomeTaskCardView(task: b, color: .blue) {
+                        selectedTask = b
+                    }
+                    HomeTaskCardView(task: c, color: .green) {
+                        selectedTask = c
+                    }
+                }
+            }
+            .frame(height: 212)
         }
     }
 }

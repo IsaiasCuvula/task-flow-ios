@@ -45,7 +45,9 @@ struct HomeTaskCardView: View {
             
             Spacer()
             if let date = task.dueDate {
-                Text("due: \(date.formatted(date: .abbreviated, time: .omitted))")
+                let label = String(localized: "due_date")
+                
+                Text("\(label) \(date.formatted(date: .abbreviated, time: .omitted))")
                     .font(.footnote)
                     .foregroundStyle(.white)
             }

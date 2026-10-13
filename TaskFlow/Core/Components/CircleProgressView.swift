@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CircleProgressView: View {
-    let progress: Double
+        let progress: Double
         var color: Color = .green
         var lineWidth: CGFloat = 4
         var size: CGFloat = 44
@@ -24,7 +24,7 @@ struct CircleProgressView: View {
                     .rotationEffect(.degrees(-90))
                     .animation(.easeInOut, value: progress)
 
-                Text("\(Int((progress * 100).rounded()))%")
+                Text(progress.formatted(.percent.precision(.fractionLength(0))))
                     .font(.system(size: size * 0.25, weight: .bold))
                     .foregroundStyle(.white)
                     .minimumScaleFactor(0.5)

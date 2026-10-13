@@ -14,10 +14,10 @@ struct TaskTileView: View {
     var daysLeftText: String? {
         guard let days = task.daysLeft else { return nil }
         switch days {
-        case ..<0: return "Atrasada \(-days)d"
-        case 0:    return "Hoje"
-        case 1:    return "Amanhã"
-        default:   return "\(days) dias"
+        case ..<0: return "late \(-days)d"
+        case 0:    return "today"
+        case 1:    return "tomorrow"
+        default:   return "\(days) days"
         }
     }
     
