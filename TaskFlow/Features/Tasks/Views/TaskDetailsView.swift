@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct TaskDetailsView: View {
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @State private var title: String = ""
     @Bindable var task: Task
@@ -22,16 +24,6 @@ struct TaskDetailsView: View {
             ScrollView {
                 VStack(spacing: 16){
                     HStack(spacing: 8){
-                        Button{
-                            task.isCompleted.toggle()
-                        } label: {
-                            Image(systemName:task.isCompleted ? "checkmark.app.fill" : "app")
-                                .font(.title)
-                                .foregroundStyle(task.isCompleted  ?  AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
-                        }
-                        .buttonStyle(.plain)
-                        
-                        
                         TextField(task.title, text: $task.title, axis: .vertical)
                             .font(.title2.weight(.semibold))
                             .lineLimit(1...3)
@@ -86,7 +78,9 @@ struct TaskDetailsView: View {
                         Spacer()
                         
                         Button{
-                            showAddSubtask.toggle()
+                            withAnimation {
+                                showAddSubtask.toggle()
+                            }
                         }label: {
                             Image(systemName: "plus")
                         }
@@ -128,6 +122,18 @@ struct TaskDetailsView: View {
                     } label :{
                         
                         Image(systemName: "xmark")
+                        
+                    }.buttonBorderShape(.circle)
+                }
+                
+                ToolbarItem(placement: .destructiveAction) {
+                    Button{
+                        withAnimation {
+                            modelContext.delete(task)
+                            dismiss()
+                        }
+                    } label :{
+                        Image(systemName: "trash")
                         
                     }.buttonBorderShape(.circle)
                 }

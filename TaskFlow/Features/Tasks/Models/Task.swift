@@ -14,7 +14,6 @@ import SwiftData
 final class Task{
     var title: String
     var note: String?
-    var isCompleted: Bool
     var dueDate: Date?
     var priority: TaskPriority
     var createdAt: Date
@@ -26,10 +25,9 @@ final class Task{
     var links: [TaskLink] = []
     
     
-    init(title: String,note: String? = nil, isCompleted: Bool = false, dueDate: Date? = nil, priority: TaskPriority = .medium) {
+    init(title: String,note: String? = nil, dueDate: Date? = nil, priority: TaskPriority = .medium) {
         self.title = title
         self.note = note
-        self.isCompleted = isCompleted
         self.dueDate = dueDate
         self.priority = priority
         self.createdAt = .now

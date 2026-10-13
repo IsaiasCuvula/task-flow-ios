@@ -11,6 +11,6 @@ extension Task {
     static let samples: [Task] = [
         Task(title: "Buy Groceries", note: "Integral", dueDate: .now),
         Task(title: "Study SwiftData", dueDate: .now.addingTimeInterval(86_400 * 2)),
-        Task(title: "Call my brother John", note: "Call John and tell him you missing him a lot",isCompleted: true, priority: .low)
+        Task(title: "Call my brother John", note: "Call John and tell him you missing him a lot", priority: .low)
     ]
 }

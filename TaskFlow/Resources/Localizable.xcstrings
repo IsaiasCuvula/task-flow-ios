@@ -192,6 +192,17 @@
         }
       }
     },
+    "no_urgent_tasks" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No urgent tasks for now. All clear"
+          }
+        }
+      }
+    },
     "priority" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -17,7 +17,7 @@ struct TasksView: View {
         NavigationStack{
             ScrollView{
                 if allTasks.isEmpty {
-                    ContentUnavailableView("empty_tasks", systemImage: "list.bullet.indent")
+                    ContentUnavailableView("empty_tasks", systemImage: "app")
                 }
                 
                 VStack {

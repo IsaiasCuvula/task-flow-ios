@@ -14,7 +14,7 @@ final class HomeViewModel{
     
     func tasksByPriority(tasks: [Task], priority: TaskPriority) -> [Task]{
       return  tasks.filter{task in
-          task.priority != priority
+          task.priority == priority
         }.sorted { task1, task2 in
             task1.dueDate ?? .now < task2.dueDate ?? .now
         }
